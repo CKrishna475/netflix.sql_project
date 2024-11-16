@@ -125,9 +125,11 @@ ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC;
 ### 6. Find Content Added in the Last 5 Years
 
 ```sql
-SELECT *
-FROM netflix
-WHERE TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '5 years';
+SELECT DATE_SUB(CURRENT_DATE, INTERVAL 5 YEAR) AS date_sub_result;
+SELECT * 
+from netflix
+where STR_TO_DATE(date_added,'%M %d, %Y') >= DATE_SUB(CURRENT_DATE, INTERVAL 5 YEAR);
+
 ```
 
 **Objective:** Retrieve content added to Netflix in the last 5 years.
