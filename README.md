@@ -43,10 +43,10 @@ CREATE TABLE netflix
 
 ### 1. Count the Number of Movies vs TV Shows
 
-sql
+'''sql
 select  type , count(*) as total_content from netflix 
 group by type ;
-
+'''
 
 **Objective:** Determine the distribution of content types on Netflix.
 
