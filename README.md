@@ -44,11 +44,8 @@ CREATE TABLE netflix
 ### 1. Count the Number of Movies vs TV Shows
 
 ```sql
-SELECT 
-    type,
-    COUNT(*)
-FROM netflix
-GROUP BY 1;
+select  type , count(*) as total_content from netflix 
+group by type ;
 ```
 
 **Objective:** Determine the distribution of content types on Netflix.
@@ -56,27 +53,16 @@ GROUP BY 1;
 ### 2. Find the Most Common Rating for Movies and TV Shows
 
 ```sql
-WITH RatingCounts AS (
-    SELECT 
-        type,
-        rating,
-        COUNT(*) AS rating_count
-    FROM netflix
-    GROUP BY type, rating
-),
-RankedRatings AS (
-    SELECT 
-        type,
-        rating,
-        rating_count,
-        RANK() OVER (PARTITION BY type ORDER BY rating_count DESC) AS rank
-    FROM RatingCounts
-)
-SELECT 
-    type,
-    rating AS most_frequent_rating
-FROM RankedRatings
-WHERE rank = 1;
+select type,rating
+from
+( select type , rating, 
+count(*) ,
+rank() over(partition by type order by count(*) desc) as ranking
+from netflix 
+group by type,rating 
+order by count(rating) desc ) as Table1 
+where ranking = 1
+  
 ```
 
 **Objective:** Identify the most frequently occurring rating for each type of content.
@@ -113,11 +99,10 @@ LIMIT 5;
 ### 5. Identify the Longest Movie
 
 ```sql
-SELECT 
-    *
-FROM netflix
-WHERE type = 'Movie'
-ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC;
+select  * from netflix
+where type ='Movie' and 
+duration = (select max(duration) from netflix) ;
+
 ```
 
 **Objective:** Find the movie with the longest duration.
